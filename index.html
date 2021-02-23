@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{margin: 0;padding: 0;}
+  </style>
+</head>
+
+<body>
+  <button id="refresh">랜덤 다시 섞기</button>
+  <div class="contents"></div>
+  <div id="map" style="width:100%;height:400px;"></div>
+
+
+
+  <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=jp89kd4rnm"></script>
+  <script>
+
+
+
+    document.getElementById('refresh').addEventListener('click', function () {
+      refresh();
+    });
+    document.querySelector('body').addEventListener('keyup', function (e) {
+      if (e.keyCode == 13) {
+        refresh();
+      }
+    })
+
+    var map = new naver.maps.Map('map', {center: new naver.maps.LatLng(37.5472059, 127.0474048),
+        zoom: 16,
+        zoomControl:true});
+    let marker = '';
+    const mapChange = function (name, y, x) {
+      // 지도
+      map && map.destroy();
+      var infowindow = new naver.maps.InfoWindow({
+          content: `<h3 style="padding:5px;">${name}</h3>`
+      });
+      map = new naver.maps.Map('map', {
+        center: new naver.maps.LatLng(y, x),
+        zoom: 16,
+        zoomControl:true
+      });
+      marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(y, x),
+        map: map
+      });
+
+      infowindow.open(map, marker);
+      
+
+      // map.refresh();
+    }
+
+    const refresh = function () {
+      var eatArray = [
+        { name: '성수칼국수', px: 127.044711045097, py: 37.5477392270083 },
+        { name: '대성갈비', px: 127.04410170718302, py: 37.5470989891266 },
+        { name: '몽련', px: 127.0450259, py: 37.5471627 },
+        { name: '한촌설렁탕', px: 127.048736424793, py: 37.5462184148113 },
+        { name: '돈벼락맛집', px: 127.049053, py: 37.5461946 },
+        { name: "희정보감족", px: 127.0492542, py: 37.5460494 },
+        { name: '소년아저씨', px: 127.0494081, py: 37.5460942 },
+        { name: "토라식당", px: 127.0493759, py: 37.5460156 }
+      ];
+      var random = Math.floor(Math.random() * eatArray.length);
+      // console.log(random);
+      var ok = eatArray[random];
+      document.querySelector('.contents').innerHTML = '';
+      document.querySelector('.contents').innerHTML = `<p>오늘의 점심은 <h1>## ${ok.name} ##</h1></p>`;
+      mapChange(ok.name, ok.py, ok.px);
+    }
+    refresh();
+  </script>
+</body>
+
+</html>
